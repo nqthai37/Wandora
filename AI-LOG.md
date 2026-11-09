@@ -2,9 +2,40 @@
 
 ## Tools
 
-| Tool                          | Used for                                                                        |
-| ----------------------------- | ------------------------------------------------------------------------------- |
-| Claude Code (Claude Opus 5.5) | Harness: Next.js scaffold, check scripts, `CLAUDE.md`, permissions, CI workflow |
+| Tool                          | Used for                                                                                                                                                   |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Claude Code (Claude Opus 5.5) | Harness: Next.js scaffold, check scripts, `CLAUDE.md`, permissions, CI workflow                                                                            |
+| OpenAI Codex                  | Person B: read class brief and rubric, inspect A's harness, specify save-plan contract, implement route/validator and contract tests, verify gate evidence |
+
+## Person B - 9 November 2026
+
+- **Scope:** Person B only. Repository `nqthai37/Wandora`; team IDs 23127078 and 23127116. Read the attached class brief and PA#2 rubric before implementation.
+- **Changed - stack assumption:** the repository initially had only a README.
+  Rejected starting an independent JavaScript backend; waited for A's scaffold,
+  then pulled commit `3e18e8f` and adopted Next.js/TypeScript/Vitest.
+- **Changed - local Node version:** the default terminal uses Node 22, while A's
+  harness and CI require Node 24. Found the bundled Node 24.22.1 runtime and use
+  it for the check commands rather than changing the engine or CI requirement.
+- **Rejected - trusting a client validation result:** Save accepts only a version
+  and explicit confirmation. The backend loads and validates the stored draft,
+  computes prices in code, and publishes only after successful validation.
+- **Rejected - unauthenticated demo identity:** use signed, expiring backend
+  sessions; do not trust a client user ID or ship a public development bearer key.
+- **Design limitation:** PA#2 uses synthetic checked-data fixtures and a local
+  SQLite adapter. The real class dataset, accounts, editing and LLM are later work.
+- **Changed - build caught a Next.js configuration conflict:** the first route
+  explicitly exported `runtime = "nodejs"`. Although route tests and the four
+  required checks passed, `next build` rejected this with A's `cacheComponents`
+  setting. Removed that export: Node is already the default. Also marked the
+  runtime-only database path so Turbopack does not trace persistent data into the
+  deployment bundle. Kept A's cache configuration and the tests intact.
+- **Verified:** the four required commands passed on Node 24.22.1 (75 tests),
+  and `npm run build` passed. A separate production HTTP smoke test checked
+  unauthenticated 401, another member's 403, successful 200 with server-calculated
+  100000 VND and an identical idempotent replay, using temporary synthetic data.
+- **Evidence boundary:** GitHub initially reported `main` unprotected with zero
+  required checks. A red CI run alone must not be described as a protected merge
+  being blocked. Branch-protection setup and its screenshot remain shared work.
 
 ## Changed
 
