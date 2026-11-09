@@ -40,6 +40,9 @@ Run `npm run check` before saying a change is done. CI runs these same commands.
   the contract first and say so.
 - Send names or email addresses to the model. Only places and interests.
 - Add `|| true`, `continue-on-error` or `--passWithNoTests` to a check.
+- Drop `--max-warnings=0` from `npm run lint`, or turn a lint rule down to `warn`. Our first lint
+  job passed with an unused variable because the Next config only warns (AI-LOG, "Lint passed
+  with a warning").
 - Push straight to `main`, or rewrite history that is already pushed.
 
 ## Permissions

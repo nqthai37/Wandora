@@ -15,6 +15,11 @@
   `Cannot find name 'LayoutProps'`: Next 16 generates that type into `.next/types`, which a fresh
   clone does not have. Changed the script to `next typegen && tsc --noEmit` so the one command
   works from a fresh clone and in CI.
+- **Lint passed with a warning: a CI step that could not fail.** The assistant's first lint script
+  was `eslint .`, and PR #1's `lint` job was green. While proving each job can go red, an unused
+  variable left `npm run lint` at exit 0: `eslint-config-next` sets `no-unused-vars` to `warn`,
+  and ESLint only fails on errors. Changed the script to `eslint . --max-warnings=0` and added a
+  line to the `CLAUDE.md` "Never" list.
 
 ## Rejected
 
