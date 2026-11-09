@@ -29,6 +29,14 @@ reason: `lint` (unused variable), `format` (Prettier check), `typecheck` (string
 `number`), `test` (`expect(1).toBe(2)`). `secrets` was not forced red: that would mean committing
 a key-shaped string, and the history must stay free of anything that looks like a secret.
 
+- **The secrets job did not scan the whole history.** A fresh-context review of the branch found
+  that `gitleaks/gitleaks-action@v2`, which the assistant wrote into CI, scans only a PR's own
+  commits, and nothing at all on a tag push, while the README said "whole git history". Replaced
+  it with the gitleaks CLI (8.30.1, checksum verified) running `gitleaks git --log-opts="--all"`.
+- **Tests next to the code were silently skipped.** Vitest only included `tests/**/*.test.ts`. A
+  failing `src/server/*.test.ts` left `npm test` at exit 0. Widened the pattern to
+  `{src,tests}/**/*.test.{ts,tsx}` so contract tests run wherever they live.
+
 ## Rejected
 
 - **`npm install --force` / `--legacy-peer-deps`** for the Vitest peer conflict, which npm
