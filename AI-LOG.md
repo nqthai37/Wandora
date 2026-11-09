@@ -21,6 +21,14 @@
   and ESLint only fails on errors. Changed the script to `eslint . --max-warnings=0` and added a
   line to the `CLAUDE.md` "Never" list.
 
+## Proof that the checks can fail
+
+PR #2 (`ci/prove-red`, closed without merging) added one deliberate break per check. CI run
+https://github.com/nqthai37/Wandora/actions/runs/42612115976 shows each job red for the planted
+reason: `lint` (unused variable), `format` (Prettier check), `typecheck` (string assigned to
+`number`), `test` (`expect(1).toBe(2)`). `secrets` was not forced red: that would mean committing
+a key-shaped string, and the history must stay free of anything that looks like a secret.
+
 ## Rejected
 
 - **`npm install --force` / `--legacy-peer-deps`** for the Vitest peer conflict, which npm
