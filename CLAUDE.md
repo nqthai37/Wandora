@@ -43,6 +43,10 @@ Run `npm run check` before saying a change is done. CI runs these same commands.
 - Drop `--max-warnings=0` from `npm run lint`, or turn a lint rule down to `warn`. Our first lint
   job passed with an unused variable because the Next config only warns (AI-LOG, "Lint passed
   with a warning").
+- Trust a check's name over what it actually covers. The secrets job once scanned only each PR's
+  own commits while the README promised the whole history, and tests in `src/` were once skipped
+  without a word. Make a new check fail on purpose before relying on it (AI-LOG, "The secrets job
+  did not scan the whole history", "Tests next to the code were silently skipped").
 - Push straight to `main`, or rewrite history that is already pushed.
 
 ## Permissions
