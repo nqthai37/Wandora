@@ -14,6 +14,7 @@ export type SaveContext = { params: Promise<{ planId: string }> };
 function maySave(actor: Actor, plan: Plan): boolean {
   return (
     actor.role === "member" &&
+    actor.userId === plan.creatorId &&
     plan.members.some((member) => member.userId === actor.userId)
   );
 }
