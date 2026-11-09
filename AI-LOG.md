@@ -35,7 +35,30 @@
   100000 VND and an identical idempotent replay, using temporary synthetic data.
 - **Evidence boundary:** GitHub initially reported `main` unprotected with zero
   required checks. A red CI run alone must not be described as a protected merge
-  being blocked. Branch-protection setup and its screenshot remain shared work.
+  being blocked. Subsequently enabled the main rule and read it back: five required
+  checks, strict/up-to-date, one review, administrators included, force push and
+  deletion disabled. Saved the actual settings API response under `docs/evidence/`.
+- **Changed - GitHub connection limitation:** the connector could read the repo
+  but creating the PR returned `403 Resource not accessible by integration`.
+  Used the existing Git login through its credential helper for the repository
+  REST request. The credential stayed in memory and was neither printed nor saved.
+- **Deliberate contract break:** commit `d30ca37` removed only the creator check.
+  [CI run 42658437873](https://github.com/nqthai37/Wandora/actions/runs/42658437873)
+  failed three ownership assertions (72 tests still passed); the other four jobs
+  passed. With protection enabled, GitHub reported PR #4 blocked at that head.
+  Commit `ece7bdc` restores only the implementation line. Tests, fixture data and
+  validator rules were unchanged. See `PA2.md` for the repair run and evidence.
+- **Changed - stronger gate timing evidence:** the first red run completed before
+  protection was enabled, although its failed result subsequently blocked the PR.
+  Repeated the implementation-only break as `c96aef2` after protection was active.
+  [Run 42659339125](https://github.com/nqthai37/Wandora/actions/runs/42659339125)
+  again failed the same three ownership assertions and no other job. Saved the
+  actual `blocked` PR API response at that head. Repair `ef5a074` restores only
+  the same implementation line; the contract-test blob remains identical to the
+  initial baseline. `PA2.md` uses this final protected-gate sequence as evidence.
+- **Final repair verified:** [run 42659621100](https://github.com/nqthai37/Wandora/actions/runs/42659621100)
+  completed successfully at `ef5a074`: all five required jobs passed. The PR still
+  needs the other team member's approval; no review, merge or final tag is fabricated.
 
 ## Changed
 

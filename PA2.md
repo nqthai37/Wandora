@@ -3,44 +3,61 @@
 Team: **23127078, 23127116**. All submission documents are in English.
 
 Repository: [nqthai37/Wandora](https://github.com/nqthai37/Wandora) (public).
-This file records evidence as work happens; it is not a claim that the final
-team submission has already been tagged or graded.
+This evidence record does not claim that the final team submission is already
+reviewed, tagged or graded.
 
 ## Person B - contract and tests
 
-- Endpoint: `POST /api/v1/plans/{planId}/save`.
+- Endpoint: POST /api/v1/plans/{planId}/save.
 - [Contract](docs/contract/save-plan.md), [test matrix](docs/contract/save-plan-test-matrix.md),
   [contract tests](tests/save-plan.contract.test.ts), [integration handoff](docs/person-b-handoff.md).
-- Local validation: the four existing commands (`npm run lint`,
-  `npm run format:check`, `npm run typecheck`, `npm test`) pass on Node 24.22.1;
-  75 total tests, including A's health test. `npm run build` also passes.
-- The production HTTP route was exercised with an isolated temporary database:
-  401 for no session, 403 for another group member, 200 for a valid save and an
-  identical 200 replay. Calculated total: 100000 VND from synthetic fixtures.
-- Deliberate contract-break evidence will be linked here after the real PR CI run.
-  Tests will stay unchanged between the break and the repair.
+- Local validation: npm run lint, npm run format:check, npm run typecheck and
+  npm test pass on Node 24.22.1. **75 tests** including A's health test.
+  The production build also passes.
+- Production HTTP smoke with an isolated database: 401 with no session, 403 for
+  another group member, 200 for a valid save and identical 200 replay. Calculated
+  total: 100000 VND from synthetic fixtures. No model call.
+- [PR #4](https://github.com/nqthai37/Wandora/pull/4) targets main.
+- [Initial green run](https://github.com/nqthai37/Wandora/actions/runs/42658220503)
+  checks baseline f177ffb.
+- [Deliberate break commit](https://github.com/nqthai37/Wandora/commit/c96aef24b48d75f2ff0e90353befa1b39010ba6f)
+  removes only the creator comparison. Another group member can incorrectly save
+  the draft. [Red run](https://github.com/nqthai37/Wandora/actions/runs/42659339125),
+  [failed test job](https://github.com/nqthai37/Wandora/actions/runs/42659339125/job/129306342391):
+  **3 ownership tests failed, 72 passed**. Lint, format, typecheck and secrets passed.
+- [Repair commit](https://github.com/nqthai37/Wandora/commit/ef5a0741d5a54cd2bbf0c0e1f5f0ed6d2b940275)
+  restores the creator comparison. [Repair CI run](https://github.com/nqthai37/Wandora/actions/runs/42659621100).
+  Tests, fixtures and contract were unchanged through the break and repair.
+- [Gate observation and unchanged-test proof](docs/evidence/contract-gate.md).
 
 ## Person A - harness evidence already recorded
 
 - [Rules](CLAUDE.md), [permissions](.claude/settings.json),
   [workflow](.github/workflows/ci.yml), [commands](README.md#checks), [AI log](AI-LOG.md).
-- [A's deliberate harness failure PR #2](https://github.com/nqthai37/Wandora/pull/2),
-  closed without merging, targets `chore/harness`.
-- [A's failing CI run](https://github.com/nqthai37/Wandora/actions/runs/42612115976)
-  is recorded in A's AI log. It demonstrates failing checks; by itself it does
-  **not** prove that a protected `main` blocked a merge.
+- [A's harness failure PR #2](https://github.com/nqthai37/Wandora/pull/2), closed
+  without merging, targets chore/harness.
+- [A's failing run](https://github.com/nqthai37/Wandora/actions/runs/42612115976)
+  demonstrates failing checks. The main-branch gate evidence is PR #4 below.
 
-## Shared evidence still to complete
+## Branch protection and submission status
 
-| Requirement                            | Status / evidence                                                                                                                                                                                                                            |
-| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Public repository                      | Verified through GitHub repository metadata.                                                                                                                                                                                                 |
-| Protected `main` with required checks  | [Settings](https://github.com/nqthai37/Wandora/settings/branches). At the initial inspection on 9 November, the API reported `protected: false` and no required checks. Enable and attach a screenshot; do not claim it from a green CI run. |
-| A PR blocked by a required red check   | Pending verification after protection is enabled.                                                                                                                                                                                            |
-| Commit that turns the blocked PR green | Pending the break/repair sequence.                                                                                                                                                                                                           |
-| Deliberate contract break caught by CI | Pending actual CI evidence; see Person B above.                                                                                                                                                                                              |
-| CI for submitted `pa2` tag             | Not created: tag the final reviewed/merged team submission, not this intermediate branch.                                                                                                                                                    |
-| Self-assessment and final ZIP          | Complete jointly; filename `23127078-23127116_<total>.zip`, including `.git`, `PA2.md`, `AI-LOG.md`, `SELF_ASSESSMENT_REPORT.md`.                                                                                                            |
+| Requirement                            | Status / evidence                                                                                                                                                                                                                                                                                                                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public repository                      | Verified through GitHub repository metadata.                                                                                                                                                                                                                                                                                                                      |
+| Protected main                         | [Settings](https://github.com/nqthai37/Wandora/settings/branches), [read-back API evidence](docs/evidence/main-protection.json). PR plus one approval required; stale reviews dismissed; all five checks required and tied to GitHub Actions; up-to-date branches and resolved conversations required; administrators included; force push and deletion disabled. |
+| PR stopped by a required red check     | [PR #4](https://github.com/nqthai37/Wandora/pull/4). Before repair, its head was c96aef2 and the API reported mergeable_state: blocked. The required test job failed; review approval was also unmet.                                                                                                                                                             |
+| Commit turning checks green            | [ef5a074](https://github.com/nqthai37/Wandora/commit/ef5a0741d5a54cd2bbf0c0e1f5f0ed6d2b940275), repair run linked above. An independent team member's approval is still needed before merge.                                                                                                                                                                      |
+| Deliberate contract break caught by CI | [c96aef2](https://github.com/nqthai37/Wandora/commit/c96aef24b48d75f2ff0e90353befa1b39010ba6f), [failed job](https://github.com/nqthai37/Wandora/actions/runs/42659339125/job/129306342391).                                                                                                                                                                      |
+| CI for submitted pa2 tag               | Pending: tag the final reviewed/merged team submission, not this intermediate branch, then add the tag run URL.                                                                                                                                                                                                                                                   |
+| Self-assessment and final ZIP          | Complete together; filename 23127078-23127116_<total>.zip, including .git, PA2.md, AI-LOG.md and SELF_ASSESSMENT_REPORT.md.                                                                                                                                                                                                                                       |
 
 No final total is claimed yet. Submit by **26 November 2026, 22:00,
 Asia/Ho_Chi_Minh**, from one member's student email account.
+
+No commit has been pushed directly to main since protection was enabled.
+Person B's work and evidence commits remain on the PR branch for review.
+
+The main protection rule was enabled and read back before the final deliberate
+break commit c96aef2 was pushed. Its test check failed while already required.
+The actual blocked-state API response is preserved in
+[blocked-pr.json](docs/evidence/blocked-pr.json).
