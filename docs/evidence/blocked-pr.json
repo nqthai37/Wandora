@@ -1,0 +1,15 @@
+{
+  "observedAtUtc": "2026-11-09T16:55:12.5132633Z",
+  "source": "GET https://api.github.com/repos/nqthai37/Wandora/pulls/4",
+  "pullRequest": {
+    "number": 4,
+    "html_url": "https://github.com/nqthai37/Wandora/pull/4",
+    "state": "open",
+    "mergeable": true,
+    "mergeable_state": "blocked",
+    "head": {
+      "ref": "feat/save-plan-contract",
+      "sha": "c96aef24b48d75f2ff0e90353befa1b39010ba6f"
+    }
+  }
+}
