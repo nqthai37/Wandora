@@ -1,63 +1,62 @@
-# PA#2 - Wandora
+# PA#2 — Wandora (AI Travel Planner): harness and quality gate
 
-Team: **23127078, 23127116**. All submission documents are in English.
+Team: 23127078 Quách Châu Hạo Kiệt (Person A, harness and gate) · 23127116 Nguyễn Quang Thái
+(Person B, contract and tests). Self-assessment: [`SELF_ASSESSMENT_REPORT.md`](SELF_ASSESSMENT_REPORT.md).
 
-Repository: [nqthai37/Wandora](https://github.com/nqthai37/Wandora) (public).
-This evidence record does not claim that the final team submission is already
-reviewed, tagged or graded.
+## Required links
 
-## Person B - contract and tests
+| What                        | Link                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Repository (public)         | https://github.com/nqthai37/Wandora                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Protected-branch settings   | [Settings → Branches](https://github.com/nqthai37/Wandora/settings/branches) (owner-only page); read-back of the rule through the REST API: [`docs/evidence/main-protection.json`](docs/evidence/main-protection.json)                                                                                                                                                                                                                              |
+| PR blocked by a red check   | [PR #4](https://github.com/nqthai37/Wandora/pull/4) at head [`c96aef2`](https://github.com/nqthai37/Wandora/commit/c96aef24b48d75f2ff0e90353befa1b39010ba6f): required `test` failed in [run 42659339125](https://github.com/nqthai37/Wandora/actions/runs/42659339125); GitHub reported `mergeable_state: blocked` ([`docs/evidence/blocked-pr.json`](docs/evidence/blocked-pr.json))                                                              |
+| Commit that turned it green | [`ef5a074`](https://github.com/nqthai37/Wandora/commit/ef5a0741d5a54cd2bbf0c0e1f5f0ed6d2b940275), [run 42659621100](https://github.com/nqthai37/Wandora/actions/runs/42659621100): all five required jobs green                                                                                                                                                                                                                                     |
+| CI run for the `pa2` tag    | [Actions runs for `pa2`](https://github.com/nqthai37/Wandora/actions?query=branch%3Apa2) (the workflow runs on every tag push)                                                                                                                                                                                                                                                                                                                      |
+| Deliberate contract break   | [`c96aef2`](https://github.com/nqthai37/Wandora/commit/c96aef24b48d75f2ff0e90353befa1b39010ba6f) deletes one implementation line (`actor.userId === plan.creatorId &&`), so another group member could save the creator's draft. [Failed test job](https://github.com/nqthai37/Wandora/actions/runs/42659339125/job/129306342391): 3 ownership tests failed, 72 passed. Details: [`docs/evidence/contract-gate.md`](docs/evidence/contract-gate.md) |
 
-- Endpoint: POST /api/v1/plans/{planId}/save.
+**About commit hashes.** PR #4 was merged with "Rebase and merge", so `main` holds re-created
+copies of its commits (for example `39b68d0` and `4c1fca8`) with the merge date. The evidence above
+uses the **original** commits and CI runs, which stay on branch
+[`feat/save-plan-contract`](https://github.com/nqthai37/Wandora/tree/feat/save-plan-contract) and
+in PR #4. That branch is kept on purpose. The file tree of `main` after the merge is identical to
+the PR head `3f2c67e`.
+
+## Person A — harness
+
+- Rules: [`CLAUDE.md`](CLAUDE.md) (Stack, Commands, Conventions, Never, Permissions).
+- Permissions in three tiers, enforced: [`.claude/settings.json`](.claude/settings.json).
+- Secrets: [`.env.example`](.env.example) lists every variable without values; `.env*` is
+  git-ignored; the `secrets` job scans every commit with gitleaks. Spending cap: README
+  [§Model and cost](README.md#model-and-cost).
+- One command per check: README [§Checks](README.md#checks), the same four commands in
+  [`ci.yml`](.github/workflows/ci.yml).
+- Each check proven able to fail: [PR #2](https://github.com/nqthai37/Wandora/pull/2), closed
+  without merging; [run 42612115976](https://github.com/nqthai37/Wandora/actions/runs/42612115976)
+  shows `lint`, `format`, `typecheck` and `test` red for the planted reasons.
+- Harness merged through [PR #1](https://github.com/nqthai37/Wandora/pull/1) (green
+  [run 42644730048](https://github.com/nqthai37/Wandora/actions/runs/42644730048)) and
+  [PR #3](https://github.com/nqthai37/Wandora/pull/3).
+
+### Fresh clone
+
+On 24 November 2026 a fresh `git clone` of `main` at `cbd0aa6`, following the README on Node 24
+(`npm ci`, `cp .env.example .env`, `npm run check`), passed lint, format, typecheck and tests
+(2 files, 75 tests).
+
+## Person B — contract and tests
+
+- Endpoint: `POST /api/v1/plans/{planId}/save`.
 - [Contract](docs/contract/save-plan.md), [test matrix](docs/contract/save-plan-test-matrix.md),
   [contract tests](tests/save-plan.contract.test.ts), [integration handoff](docs/person-b-handoff.md).
-- Local validation: npm run lint, npm run format:check, npm run typecheck and
-  npm test pass on Node 24.22.1. **75 tests** including A's health test.
-  The production build also passes.
-- Production HTTP smoke with an isolated database: 401 with no session, 403 for
-  another group member, 200 for a valid save and identical 200 replay. Calculated
-  total: 100000 VND from synthetic fixtures. No model call.
-- [PR #4](https://github.com/nqthai37/Wandora/pull/4) targets main.
-- [Initial green run](https://github.com/nqthai37/Wandora/actions/runs/42658220503)
-  checks baseline f177ffb.
-- [Deliberate break commit](https://github.com/nqthai37/Wandora/commit/c96aef24b48d75f2ff0e90353befa1b39010ba6f)
-  removes only the creator comparison. Another group member can incorrectly save
-  the draft. [Red run](https://github.com/nqthai37/Wandora/actions/runs/42659339125),
-  [failed test job](https://github.com/nqthai37/Wandora/actions/runs/42659339125/job/129306342391):
-  **3 ownership tests failed, 72 passed**. Lint, format, typecheck and secrets passed.
-- [Repair commit](https://github.com/nqthai37/Wandora/commit/ef5a0741d5a54cd2bbf0c0e1f5f0ed6d2b940275)
-  restores the creator comparison. [Repair CI run](https://github.com/nqthai37/Wandora/actions/runs/42659621100).
-  Tests, fixtures and contract were unchanged through the break and repair.
-- [Gate observation and unchanged-test proof](docs/evidence/contract-gate.md).
+- Baseline green: [run 42658220503](https://github.com/nqthai37/Wandora/actions/runs/42658220503)
+  at `f177ffb`.
+- The test file is byte-identical in the baseline, break and repair commits (blob
+  `9bd75079e7d624b322d1f2a93db1cf5dd2237d53`); the break and the repair each change one
+  implementation line. See [`docs/evidence/contract-gate.md`](docs/evidence/contract-gate.md).
 
-## Person A - harness evidence already recorded
+## Branch protection
 
-- [Rules](CLAUDE.md), [permissions](.claude/settings.json),
-  [workflow](.github/workflows/ci.yml), [commands](README.md#checks), [AI log](AI-LOG.md).
-- [A's harness failure PR #2](https://github.com/nqthai37/Wandora/pull/2), closed
-  without merging, targets chore/harness.
-- [A's failing run](https://github.com/nqthai37/Wandora/actions/runs/42612115976)
-  demonstrates failing checks. The main-branch gate evidence is PR #4 below.
-
-## Branch protection and submission status
-
-| Requirement                            | Status / evidence                                                                                                                                                                                                                                                                                                                                                 |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Public repository                      | Verified through GitHub repository metadata.                                                                                                                                                                                                                                                                                                                      |
-| Protected main                         | [Settings](https://github.com/nqthai37/Wandora/settings/branches), [read-back API evidence](docs/evidence/main-protection.json). PR plus one approval required; stale reviews dismissed; all five checks required and tied to GitHub Actions; up-to-date branches and resolved conversations required; administrators included; force push and deletion disabled. |
-| PR stopped by a required red check     | [PR #4](https://github.com/nqthai37/Wandora/pull/4). Before repair, its head was c96aef2 and the API reported mergeable_state: blocked. The required test job failed; review approval was also unmet.                                                                                                                                                             |
-| Commit turning checks green            | [ef5a074](https://github.com/nqthai37/Wandora/commit/ef5a0741d5a54cd2bbf0c0e1f5f0ed6d2b940275), repair run linked above. An independent team member's approval is still needed before merge.                                                                                                                                                                      |
-| Deliberate contract break caught by CI | [c96aef2](https://github.com/nqthai37/Wandora/commit/c96aef24b48d75f2ff0e90353befa1b39010ba6f), [failed job](https://github.com/nqthai37/Wandora/actions/runs/42659339125/job/129306342391).                                                                                                                                                                      |
-| CI for submitted pa2 tag               | Pending: tag the final reviewed/merged team submission, not this intermediate branch, then add the tag run URL.                                                                                                                                                                                                                                                   |
-| Self-assessment and final ZIP          | Complete together; filename 23127078-23127116_<total>.zip, including .git, PA2.md, AI-LOG.md and SELF_ASSESSMENT_REPORT.md.                                                                                                                                                                                                                                       |
-
-No final total is claimed yet. Submit by **26 November 2026, 22:00,
-Asia/Ho_Chi_Minh**, from one member's student email account.
-
-No commit has been pushed directly to main since protection was enabled.
-Person B's work and evidence commits remain on the PR branch for review.
-
-The main protection rule was enabled and read back before the final deliberate
-break commit c96aef2 was pushed. Its test check failed while already required.
-The actual blocked-state API response is preserved in
-[blocked-pr.json](docs/evidence/blocked-pr.json).
+Enabled on `main` on 9 November 2026 at 16:49 UTC, before the deliberate break `c96aef2` was
+pushed: pull request with one approval, the five checks `lint`, `format`, `typecheck`, `test`,
+`secrets` required and up to date, conversations resolved, administrators included, force push
+and deletion disabled. Every change to `main` after that went through a pull request.
